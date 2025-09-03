@@ -1,0 +1,35 @@
+pragma solidity ^0.8.24;
+
+contract Solidity_DOS {
+    address public king;
+    uint256 public balance;
+
+    function claimThrone() external payable {
+        require(msg.value > balance, "Need to pay more to become the king");
+
+        (bool sent,) = king.call{value: balance}("");
+        require(sent, "Failed to send Ether");
+
+        balance = msg.value;
+        king = msg.sender;
+    }
+}
+
+pragma solidity ^0.8.24;
+
+contract Solidity_DOS {
+    address public king;
+    uint256 public balance;
+
+    function claimThrone() external payable {
+        require(msg.value > balance, "Need to pay more to become the king");
+
+        address previousKing = king;
+        uint256 previousBalance = balance;
+
+        king = msg.sender;
+        balance = msg.value;
+
+        payable(previousKing).transfer(previousBalance);
+    }
+}
